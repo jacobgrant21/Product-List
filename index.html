@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Sheet Builder</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="brand-header">
+    <div class="logo-row">
+      <div class="logo">GVS</div>
+      <div class="divider">|</div>
+      <div class="logo">rpb</div>
+    </div>
+    <div class="contact">
+      <input id="repName" value="Jake Grant" />
+      <input id="repEmail" value="Jacob.grant@gvs.com" />
+      <input id="repPhone" value="414-758-9778" />
+      <input id="sheetTitle" value="Custom Products" />
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="catalog">
+      <h2>Kit Builder</h2>
+      <div class="controls">
+        <input id="search" placeholder="Search part # or description" />
+        <select id="priceMode">
+          <option value="customer">Customer View (no cost)</option>
+          <option value="distributor">Distributor View (show cost)</option>
+        </select>
+        <select id="distributorSelect"></select>
+        <input id="manualDistributor" placeholder="Or add less-popular distributor name" />
+      </div>
+      <div id="productList" class="product-list"></div>
+    </section>
+
+    <section class="sheet">
+      <h2>Sales Sheet Preview</h2>
+      <div id="sheetPreview" class="sheet-preview"></div>
+      <button id="downloadBtn">Export Print/PDF</button>
+    </section>
+
+    <aside class="chat">
+      <h2>AI Assistant</h2>
+      <div id="chatLog" class="chat-log"></div>
+      <textarea id="chatInput" placeholder="Ask: Build a 16-user painting kit with Z-Link and airline"></textarea>
+      <button id="chatSend">Send</button>
+      <p class="small">Assistant asks follow-up questions instead of guessing (PAPR, filter, airline length, distributor pricing).</p>
+    </aside>
+  </main>
+
+<script src="app.js"></script>
+</body>
+</html>
