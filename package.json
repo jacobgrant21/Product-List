@@ -4,6 +4,7 @@
   "private": true,
   "description": "Static sales sheet builder with AI-assisted kit flow",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   }
 }
