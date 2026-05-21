@@ -1,0 +1,9 @@
+{
+  "name": "sales-sheet-builder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static sales sheet builder with AI-assisted kit flow",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

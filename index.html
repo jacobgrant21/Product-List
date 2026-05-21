@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Sheet Builder</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">GVS <span>|</span> rpb</div>
+    <div class="header-fields">
+      <input id="repName" value="Jake Grant" />
+      <input id="repEmail" value="Jacob.grant@gvs.com" />
+      <input id="repPhone" value="414-758-9778" />
+      <input id="sheetTitle" value="Custom Products" />
+    </div>
+    <div class="build-tag">New UI v2 • Functional builder focus</div>
+  </header>
+
+  <main class="app-grid">
+    <section class="panel builder">
+      <h2>Kit Builder</h2>
+      <div class="field-grid">
+        <input id="search" placeholder="Search part # or description" />
+        <select id="priceMode">
+          <option value="customer">Customer PDF (no pricing)</option>
+          <option value="distributor">Distributor PDF (show pricing)</option>
+        </select>
+        <select id="distributorSelect"></select>
+        <input id="manualDistributor" placeholder="Add another distributor name" />
+      </div>
+      <div id="productList" class="product-list"></div>
+    </section>
+
+    <section class="panel workspace">
+      <div class="workspace-head">
+        <h2>Quote Builder Workspace</h2>
+        <div class="head-actions">
+          <button id="clearBtn" class="ghost">Clear kit</button>
+          <button id="downloadBtn">Export PDF Layout</button>
+        </div>
+      </div>
+      <div class="table-head">
+        <span>Part</span><span>Description</span><span>Qty</span><span id="priceColHead">Price</span><span>Ext</span><span></span>
+      </div>
+      <div id="sheetPreview" class="rows"></div>
+      <div class="summary"><span>Items: <b id="itemCount">0</b></span><span>Total: <b id="sheetTotal">$0.00</b></span></div>
+    </section>
+
+    <section class="panel assistant">
+      <h2>AI Assistant</h2>
+      <div id="chatLog" class="chat-log"></div>
+      <textarea id="chatInput" placeholder="Example: Build 8-user painting kit"></textarea>
+      <button id="chatSend">Send</button>
+      <p class="hint">Assistant asks required follow-ups (respirator, filter setup, airline length, distributor) before building a kit.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
