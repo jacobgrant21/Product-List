@@ -1,3 +1,5 @@
+const BUILD_ID = 'UI-REFRESH-2026-05-21-1918UTC';
+
 const products = [
   { part: '04-906', desc: 'Radex - Airline Filter', prices: { Main: 601.78, FNL: 601.78, Grainger: 566.79 } },
   { part: '08-400-01', desc: 'RPB GX4 Gas Monitor - 10ppm CO', prices: { Main: 1952.23, FNL: 1952.23, Grainger: 1952.23 } },
@@ -18,19 +20,21 @@ const fmt = (n) => `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, m
 const getPrice = (p) => p.prices[selectedDistributor] ?? p.prices.Main ?? 0;
 
 function renderDistributors() {
-  $('distributorSelect').innerHTML = distributors.map((d) => `<option ${d===selectedDistributor?'selected':''}>${d}</option>`).join('');
+  $('distributorSelect').innerHTML = distributors.map((d) => `<option ${d === selectedDistributor ? 'selected' : ''}>${d}</option>`).join('');
 }
 
 function renderCatalog() {
   const term = $('search').value.toLowerCase();
   $('productList').innerHTML = products.filter((p) => `${p.part} ${p.desc}`.toLowerCase().includes(term)).map((p) => `
     <div class="product">
-      <div class="img">${p.part.slice(0,6)}</div>
+      <div class="img">${p.part.slice(0, 6)}</div>
       <div><b>${p.part}</b><div>${p.desc}</div><small>${fmt(getPrice(p))} (${selectedDistributor})</small></div>
       <button data-add="${p.part}">Add</button>
     </div>
   `).join('');
-  document.querySelectorAll('[data-add]').forEach((btn) => btn.onclick = () => addPart(btn.dataset.add));
+  document.querySelectorAll('[data-add]').forEach((btn) => {
+    btn.onclick = () => addPart(btn.dataset.add);
+  });
 }
 
 function addPart(part, qty = 1) {
@@ -46,6 +50,7 @@ function renderSheet() {
   const mode = $('priceMode').value;
   $('priceColHead').style.visibility = mode === 'customer' ? 'hidden' : 'visible';
   let total = 0;
+
   $('sheetPreview').innerHTML = kit.map((k, i) => {
     const price = getPrice(k);
     const ext = price * k.qty;
@@ -60,12 +65,27 @@ function renderSheet() {
     </div>`;
   }).join('');
 
-  document.querySelectorAll('[data-rm]').forEach((b) => b.onclick = () => { kit.splice(Number(b.dataset.rm), 1); renderSheet(); });
-  document.querySelectorAll('[data-qty]').forEach((q) => q.onchange = () => { const i = Number(q.dataset.qty); kit[i].qty = Math.max(1, Number(q.value)||1); renderSheet(); });
-  $('itemCount').textContent = kit.reduce((a,b) => a + b.qty, 0);
+  document.querySelectorAll('[data-rm]').forEach((b) => {
+    b.onclick = () => {
+      kit.splice(Number(b.dataset.rm), 1);
+      renderSheet();
+    };
+  });
+
+  document.querySelectorAll('[data-qty]').forEach((q) => {
+    q.onchange = () => {
+      const i = Number(q.dataset.qty);
+      kit[i].qty = Math.max(1, Number(q.value) || 1);
+      renderSheet();
+    };
+  });
+
+  $('itemCount').textContent = kit.reduce((a, b) => a + b.qty, 0);
   $('sheetTotal').textContent = mode === 'distributor' ? fmt(total) : 'Hidden in customer PDF';
 }
 
+function bot(text) { const d = document.createElement('div'); d.className = 'bubble bot'; d.textContent = text; $('chatLog').appendChild(d); }
+function user(text) { const d = document.createElement('div'); d.className = 'bubble user'; d.textContent = text; $('chatLog').appendChild(d); }
 
 function preloadDemoKit() {
   kit = [];
@@ -73,44 +93,54 @@ function preloadDemoKit() {
   addPart('04-906', 1);
   addPart('08-400-01', 1);
   addPart('NV2028', 8);
-  bot('Loaded a demo 8-user kit so you can immediately see how this works.');
+  bot('Loaded demo 8-user kit.');
 }
 
-function bot(text){ const d=document.createElement('div'); d.className='bubble bot'; d.textContent=text; $('chatLog').appendChild(d); }
-function user(text){ const d=document.createElement('div'); d.className='bubble user'; d.textContent=text; $('chatLog').appendChild(d); }
-
-function handleAssistant(msg){
+function handleAssistant(msg) {
   const t = msg.toLowerCase();
+
   if (assistantState.pending === 'respirator') {
-    if (t.includes('z')) assistantState.draft.respirator='z';
-    else if (t.includes('t')) assistantState.draft.respirator='t';
+    if (t.includes('z')) assistantState.draft.respirator = 'z';
+    else if (t.includes('t')) assistantState.draft.respirator = 't';
     else return bot('Which respirator platform: Z-Link or T-Link?');
     assistantState.pending = 'filter';
     return bot('Filter setup: supplied air (Radex + GX4) or PAPR only?');
   }
+
   if (assistantState.pending === 'filter') {
-    if (t.includes('supplied')) assistantState.draft.filter='supplied';
-    else if (t.includes('papr')) assistantState.draft.filter='papr';
+    if (t.includes('supplied')) assistantState.draft.filter = 'supplied';
+    else if (t.includes('papr')) assistantState.draft.filter = 'papr';
     else return bot('I need filter setup: supplied air or PAPR only.');
     assistantState.pending = 'airline';
     return bot('Airline length: 25, 50, or 100 ft?');
   }
+
   if (assistantState.pending === 'airline') {
     const len = t.includes('100') ? 'NV2027' : t.includes('50') ? 'NV2029' : t.includes('25') ? 'NV2028' : null;
     if (!len) return bot('Please pick airline length: 25, 50, or 100 ft.');
     addPart(assistantState.draft.respirator === 'z' ? '16-015-23' : '17-015-12');
     if (assistantState.draft.filter === 'supplied') { addPart('04-906'); addPart('08-400-01'); }
     addPart(len);
-    assistantState.pending = null; assistantState.draft = {};
-    return bot('Done. I built the kit and added it to the sheet.');
+    assistantState.pending = null;
+    assistantState.draft = {};
+    return bot('Done. Kit built and added to quote.');
   }
 
-  if (t.includes('build') || t.includes('kit')) { assistantState.pending = 'respirator'; return bot('Sure — which respirator platform: Z-Link or T-Link?'); }
+  if (t.includes('build') || t.includes('kit')) {
+    assistantState.pending = 'respirator';
+    return bot('Sure — which respirator platform: Z-Link or T-Link?');
+  }
+
   const match = products.find((p) => t.includes(p.part.toLowerCase()));
-  if (match) { addPart(match.part); return bot(`Added ${match.part}.`); }
-  bot('Tell me to "build a kit" or provide a part number. I will ask follow-up questions instead of guessing.');
+  if (match) {
+    addPart(match.part);
+    return bot(`Added ${match.part}.`);
+  }
+
+  bot('Say "build a kit" or give a part number. I will ask follow-up questions instead of guessing.');
 }
 
+$('buildStamp').textContent = `Build: ${BUILD_ID}`;
 $('search').oninput = renderCatalog;
 $('priceMode').onchange = renderSheet;
 $('distributorSelect').onchange = () => { selectedDistributor = $('distributorSelect').value; renderCatalog(); renderSheet(); };
@@ -119,14 +149,23 @@ $('manualDistributor').onchange = () => {
   if (!name) return;
   if (!distributors.includes(name)) distributors.push(name);
   selectedDistributor = name;
-  renderDistributors(); renderCatalog(); renderSheet();
+  renderDistributors();
+  renderCatalog();
+  renderSheet();
 };
 $('downloadBtn').onclick = () => window.print();
 $('clearBtn').onclick = () => { kit = []; renderSheet(); };
-$('chatSend').onclick = () => { const q = $('chatInput').value.trim(); if(!q) return; user(q); handleAssistant(q); $('chatInput').value=''; };
+$('loadDemoBtn').onclick = preloadDemoKit;
+$('chatSend').onclick = () => {
+  const q = $('chatInput').value.trim();
+  if (!q) return;
+  user(q);
+  handleAssistant(q);
+  $('chatInput').value = '';
+};
 
 renderDistributors();
 renderCatalog();
 renderSheet();
-bot('Ready. I can build kits, add single parts, and ask required follow-up questions before creating the quote.');
+bot('Ready. Ask me to build a kit or add a part.');
 preloadDemoKit();

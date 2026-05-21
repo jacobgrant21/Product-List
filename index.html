@@ -8,19 +8,21 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">GVS <span>|</span> rpb</div>
+    <div>
+      <div class="brand"><span class="gvs">GVS</span><span class="pipe">|</span><span class="rpb">rpb</span></div>
+      <div id="buildStamp" class="build-stamp"></div>
+    </div>
     <div class="header-fields">
       <input id="repName" value="Jake Grant" />
       <input id="repEmail" value="Jacob.grant@gvs.com" />
       <input id="repPhone" value="414-758-9778" />
       <input id="sheetTitle" value="Custom Products" />
     </div>
-    <div class="build-tag">New UI v2 • Functional builder focus</div>
   </header>
 
   <main class="app-grid">
     <section class="panel builder">
-      <h2>Kit Builder</h2>
+      <h2>Product Catalog</h2>
       <div class="field-grid">
         <input id="search" placeholder="Search part # or description" />
         <select id="priceMode">
@@ -37,8 +39,9 @@
       <div class="workspace-head">
         <h2>Quote Builder Workspace</h2>
         <div class="head-actions">
-          <button id="clearBtn" class="ghost">Clear kit</button>
-          <button id="downloadBtn">Export PDF Layout</button>
+          <button id="loadDemoBtn" class="ghost">Load demo kit</button>
+          <button id="clearBtn" class="ghost">Clear</button>
+          <button id="downloadBtn">Export PDF</button>
         </div>
       </div>
       <div class="table-head">
@@ -49,11 +52,11 @@
     </section>
 
     <section class="panel assistant">
-      <h2>AI Assistant</h2>
+      <h2>AI Quote Assistant</h2>
       <div id="chatLog" class="chat-log"></div>
-      <textarea id="chatInput" placeholder="Example: Build 8-user painting kit"></textarea>
+      <textarea id="chatInput" placeholder="Example: build 12-user kit for supplied air"></textarea>
       <button id="chatSend">Send</button>
-      <p class="hint">Assistant asks required follow-ups (respirator, filter setup, airline length, distributor) before building a kit.</p>
+      <p class="hint">Assistant will ask required follow-ups before building kit (platform, filter setup, airline length).</p>
     </section>
   </main>
 
